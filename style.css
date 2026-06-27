@@ -712,3 +712,63 @@ body, .container-detalles, .btn-regresar, h2, h3, h4 {
     border-color: #00ff66;
     box-shadow: 0 0 12px #00ff66;
 }
+
+/* ==========================================
+   🛠️ ADAPTACIÓN PARA PANTALLAS DE CELULAR (RESPONSIVE)
+   ========================================== */
+@media (max-width: 768px) {
+    
+    /* 1. La tarjeta o contenedor principal pasa de horizontal a vertical */
+    .detalle-dispositivo, .contenedor-principal, .tarjeta-detalles {
+        flex-direction: column !important;
+        display: flex;
+        padding: 10px;
+        width: 100%;
+    }
+
+    /* 2. Las columnas principales (ej: datos a la izquierda, mapa a la derecha) 
+       ahora ocuparán todo el ancho del celular una abajo de la otra */
+    .columna-izquierda, .columna-derecha, .bloque-info, .recuadro-zona {
+        width: 100% !important;
+        max-width: 100% !important;
+        margin: 10px 0 !important;
+        box-sizing: border-box;
+    }
+
+    /* 3. Ajustar el mueble CSS Grid para que no se rompa en pantallas angostas */
+    .mueble-real-contenedor {
+        width: 100%;
+        max-width: 100%;
+        padding: 5px;
+    }
+
+    /* Hacemos los cajones un poquito más altos para que sea fácil tocarlos con el dedo */
+    .cajon-inf {
+        height: 35px !important; 
+    }
+
+    /* 4. Ajustar la línea de evolución (las carcasas/teléfonos de la misma serie) 
+       para que se pueda hacer scroll horizontal con el dedo si no caben todas */
+    #contenedor-evolucion {
+        display: flex !important;
+        flex-wrap: nowrap !important;
+        overflow-x: auto !important;
+        gap: 10px;
+        padding-bottom: 10px;
+        justify-content: flex-start !important;
+    }
+
+    .tarjeta-evolucion, .tarjeta-dispositivo {
+        flex: 0 0 120px !important; /* Mantiene un tamaño fijo para cada tarjeta en el scroll */
+    }
+
+    /* 5. Achicar un poco los textos grandes para que no fuercen saltos de línea feos */
+    h1, .titulo-modelo {
+        font-size: 1.8rem !important;
+        text-align: center;
+    }
+    
+    h3 {
+        font-size: 1.2rem !important;
+    }
+}
