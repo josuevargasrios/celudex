@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1200">
+    <title>CaseDex - by Josvar 💚</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📱</text></svg>">
+</head>
+<body>
+    <div class="casedex-container">
+        <header class="pokedex-header">
+            <div class="header-top">
+                <div class="pokedex-camera"></div>
+                <div class="pokedex-lights">
+                    <span class="light green-neon"></span>
+                    <span class="light dark-green"></span>
+                    <span class="light white"></span>
+                </div>
+            </div>
+            <h1>💚 CaseDex</h1>
+            <p>El buscador oficial de la tienda. Selecciona un modelo para ver especificaciones completas.</p>
+        </header>
+
+        <section class="panel-control">
+            <div class="search-wrapper">
+                <span class="search-icon">🔍</span>
+                <input type="text" id="buscador-input" placeholder="Buscar referencia (ej: iPhone 15 Pro, 17e)...">
+            </div>
+            
+            <div class="filter-wrapper">
+                <label for="filtro-grupo">Filtrar por Grupo:</label>
+                <select id="filtro-grupo">
+                    <option value="todos">⚡ Todos los Modelos</option>
+                    <option value="Apple">🍏 Apple</option>
+                    <option value="Samsung">🔹 Samsung</option>
+                    <option value="Xiaomi">🔺 Xiaomi</option>
+                </select>
+            </div>
+        </section>
+
+        <main class="grid-matriz" id="grid-dispositivos"></main>
+        
+        <div id="no-resultados" class="mensaje-vacio oculto">
+            ❌ No se encontró ningún dispositivo que coincida.
+        </div>
+
+        
+        <footer style="text-align: center; color: #666; font-size: 0.8rem; margin-top: 30px; font-family: sans-serif;">
+            &copy; 2026 CaseDex. Todos los derechos reservados. Creado por Josvar.
+        </footer>
+
+    </div>
+
+    <script>
+        // ESTA ES TU ALTERNATIVA A BASE DE DATOS (Objeto Centralizado)
+        const listaIphones = [
+            { modelo: "iPhone 5", grupo: "Apple" },
+            { modelo: "iPhone 6", grupo: "Apple" },
+            { modelo: "iPhone 6 Plus", grupo: "Apple" },
+            { modelo: "iPhone 7", grupo: "Apple" },
+            { modelo: "iPhone 7 Plus", grupo: "Apple" },
+            { modelo: "iPhone 8", grupo: "Apple" },
+            { modelo: "iPhone 8 Plus", grupo: "Apple" },
+            { modelo: "iPhone X", grupo: "Apple" },
+            { modelo: "iPhone XR", grupo: "Apple" },
+            { modelo: "iPhone XS", grupo: "Apple" },
+            { modelo: "iPhone XS Max", grupo: "Apple" },
+            { modelo: "iPhone 11", grupo: "Apple" },
+            { modelo: "iPhone 11 Pro", grupo: "Apple" },
+            { modelo: "iPhone 11 Pro Max", grupo: "Apple" },
+            { modelo: "iPhone SE 2020", grupo: "Apple" },
+            { modelo: "iPhone 12 Mini", grupo: "Apple" },
+            { modelo: "iPhone 12", grupo: "Apple" },
+            { modelo: "iPhone 12 Pro", grupo: "Apple" },
+            { modelo: "iPhone 12 Pro Max", grupo: "Apple" },
+            { modelo: "iPhone 13 Mini", grupo: "Apple" },
+            { modelo: "iPhone 13", grupo: "Apple" },
+            { modelo: "iPhone 13 Pro", grupo: "Apple" },
+            { modelo: "iPhone 13 Pro Max", grupo: "Apple" },
+            { modelo: "iPhone 14", grupo: "Apple" },
+            { modelo: "iPhone 14 Plus", grupo: "Apple" },
+            { modelo: "iPhone 14 Pro", grupo: "Apple" },
+            { modelo: "iPhone 14 Pro Max", grupo: "Apple" },
+            { modelo: "iPhone 15", grupo: "Apple" },
+            { modelo: "iPhone 15 Plus", grupo: "Apple" },
+            { modelo: "iPhone 15 Pro", grupo: "Apple" },
+            { modelo: "iPhone 15 Pro Max", grupo: "Apple" },
+            { modelo: "iPhone 16e", grupo: "Apple" },
+            { modelo: "iPhone 16", grupo: "Apple" },
+            { modelo: "iPhone 16 Plus", grupo: "Apple" },
+            { modelo: "iPhone 16 Pro", grupo: "Apple" },
+            { modelo: "iPhone 16 Pro Max", grupo: "Apple" },
+            { modelo: "iPhone 17e", grupo: "Apple" },
+            { modelo: "iPhone 17", grupo: "Apple" },
+            { modelo: "iPhone Air", grupo: "Apple" },
+            { modelo: "iPhone 17 Pro", grupo: "Apple" },
+            { modelo: "iPhone 17 Pro Max", grupo: "Apple" }
+        ];
+
+        const grid = document.getElementById('grid-dispositivos');
+        const buscador = document.getElementById('buscador-input');
+        const filtroGrupo = document.getElementById('filtro-grupo');
+        const noResultados = document.getElementById('no-resultados');
+
+        function renderizarMatriz() {
+            const textoBusqueda = buscador.value.toLowerCase().trim();
+            const grupoSeleccionado = filtroGrupo.value;
+            
+            grid.innerHTML = '';
+            let contadorVisibles = 0;
+
+            listaIphones.forEach((item, index) => {
+                const coincideBusqueda = item.modelo.toLowerCase().includes(textoBusqueda);
+                const coincideGrupo = (grupoSeleccionado === 'todos') || (item.grupo === grupoSeleccionado);
+
+                if (coincideBusqueda && coincideGrupo) {
+                    contadorVisibles++;
+                    const numeroDex = String(index + 1).padStart(3, '0');
+
+                    // 1. EVALUACIÓN DE DISEÑO DE PANTALLA SEGÚN EL MODELO
+                    let tipoPantalla = '';
+
+                    // Si es un modelo 'e' (16e o 17e) -> Notch clásico
+                    if (item.modelo.includes('16e') || item.modelo.includes('17e')) {
+                        tipoPantalla = 'notch'; 
+                    } 
+                    // Si es un modelo con Isla Dinámica
+                    else if (
+                        item.modelo.includes('Air') ||
+                        item.modelo.includes('14 Pro') || 
+                        item.modelo.includes('15') || 
+                        item.modelo.includes('16') || 
+                        item.modelo.includes('17')
+                    ) {
+                        tipoPantalla = 'isla-dinamica';
+                    }
+                    // Si es de los modelos antiguos clásicos -> Botón Home
+                    else if (
+                        item.modelo.includes('iPhone 5') ||
+                        item.modelo.includes('iPhone 6') ||
+                        item.modelo.includes('iPhone 7') ||
+                        item.modelo.includes('iPhone 8') ||
+                        item.modelo.includes('iPhone SE')
+                    ) {
+                        tipoPantalla = 'boton-home';
+                    }
+                    // Cualquier otro intermedio (X, XR, XS, 11, 12, 13) -> Notch clásico
+                    else {
+                        tipoPantalla = 'notch';
+                    }
+
+                    // 2. Definimos el HTML interno del elemento según el tipo de pantalla
+                    let elementoPantalla = '';
+                    if (tipoPantalla === 'isla-dinamica') {
+                        elementoPantalla = '<div class="isla-dinamica"></div>';
+                    } else if (tipoPantalla === 'notch') {
+                        elementoPantalla = '<div class="notch"></div>';
+                    } else if (tipoPantalla === 'boton-home') {
+                        elementoPantalla = '<div class="boton-home"></div>';
+                    }
+                    
+                    const tarjeta = document.createElement('div');
+                    tarjeta.className = 'tarjeta-pokemon';
+                    tarjeta.innerHTML = `
+                        <div class="pokemon-id">#${numeroDex}</div>
+                        <div class="imagen-contenedor">
+                            <div class="smartphone-icon ${tipoPantalla === 'boton-home' ? 'estilo-clasico' : ''}">
+                                ${elementoPantalla}
+                            </div>
+                        </div>
+                        <div class="marca">Apple</div>
+                        <div class="modelo">${item.modelo}</div>
+                    `;
+                    
+                    tarjeta.addEventListener('click', () => {
+                        window.location.href = `detalles.html?modelo=${encodeURIComponent(item.modelo)}`;
+                    });
+                    grid.appendChild(tarjeta);
+                }
+            });
+
+            if (contadorVisibles === 0) noResultados.classList.remove('oculto');
+            else noResultados.classList.add('oculto');
+        }
+
+        buscador.addEventListener('input', renderizarMatriz);
+        filtroGrupo.addEventListener('change', renderizarMatriz);
+        document.addEventListener('DOMContentLoaded', renderizarMatriz);
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1200">
+    <title>Especificaciones del Dispositivo - CaseDex</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📱</text></svg>">
+</head>
+<body>
+    <div class="casedex-container container-detalles">
+        
+        <a href="index.html" class="btn-regresar">⬅️ Volver al Buscador</a>
+
+        <div class="modal-info-header">
+            <div class="modal-avatar-smartphone">
+                <div class="smartphone-icon-mini"><div class="notch-mini"></div></div>
+            </div>
+            <div>
+                <span class="modal-submarca" id="txt-marca">CARGANDO...</span>
+                <h2 id="txt-modelo">Modelo</h2>
+            </div>
+        </div>
+
+        <div class="dos-columnas-grid">
+            <section class="recuadro-zona">
+                <h3>📋 Características</h3>
+                <div class="lista-detalles" style="display: flex; gap: 40px; width: 100%; justify-content: space-between; flex-wrap: nowrap;">
+                    
+                    <div class="columna-caracteristicas" style="flex: 1; min-width: 45%;">
+                        <div class="item-detalle" style="padding: 10px 0; border-bottom: 1px dashed rgba(255,255,255,0.1);">
+                            <strong>Tipo de Puerto:</strong> <span id="char-puerto">-</span>
+                        </div>
+                        <div class="item-detalle" style="padding: 10px 0; border-bottom: 1px dashed rgba(255,255,255,0.1);">
+                            <strong>Cantidad de Cámaras:</strong> <span id="char-camaras">-</span>
+                        </div>
+                        <div class="item-detalle" style="padding: 10px 0; border-bottom: 1px dashed rgba(255,255,255,0.1);">
+                            <strong>Tamaño de Pantalla:</strong> <span id="char-tamano">-</span>
+                        </div>
+                    </div>
+
+                    <div class="columna-caracteristicas" style="flex: 1; min-width: 45%;">
+                        <div class="item-detalle" style="padding: 10px 0; border-bottom: 1px dashed rgba(255,255,255,0.1);">
+                            <strong>Botón de Silencio:</strong> <span id="char-silenciar">-</span>
+                        </div>
+                        <div class="item-detalle" style="padding: 10px 0; border-bottom: 1px dashed rgba(255,255,255,0.1);">
+                            <strong>Seguridad Biométrica:</strong> <span id="char-faceid">-</span>
+                        </div>
+                        <div class="item-detalle" style="padding: 10px 0; border-bottom: 1px dashed rgba(255,255,255,0.1);">
+                            <strong>Control de Cámara:</strong> <span id="char-controlcamara">-</span>
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+
+            <section class="recuadro-zona">
+                <h3>🔄 Compatibilidades</h3>
+                <div class="lista-detalles">
+                    <div class="item-detalle compatible-block">
+                        <strong>Protector de Pantalla:</strong>
+                        <p id="comp-pantalla">-</p>
+                    </div>
+                    <div class="item-detalle compatible-block">
+                        <strong>Cubrecámaras:</strong>
+                        <p id="comp-cubrecamaras">-</p>
+                    </div>
+                    <div class="item-detalle compatible-block">
+                        <strong>Carcasas / Fundas:</strong>
+                        <p id="comp-carcasas">-</p>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <section class="recuadro-zona">
+            <h3>📍 Ubicación en Tienda</h3>
+            <span id="txt-nombre-mueble" style="display: none;"></span> 
+            
+            <p id="txt-nota-ubicacion">Cargando ubicación...</p>
+
+            <div id="contenedor-plano-dinamico"></div>
+        </section>
+
+        <section class="recuadro-zona evolucion-seccion seccion-espaciada">
+            <h3>🧬 Línea de Evolución de la Serie</h3>
+            <div class="evolucion-flex" id="contenedor-evolucion">
+                </div>
+        </section>
+
+        <footer style="text-align: center; color: #666; font-size: 0.8rem; margin-top: 30px; font-family: sans-serif;">
+            &copy; 2026 CaseDex. Todos los derechos reservados. Creado por Josvar.
+        </footer>
+        
+    </div>
+
+    <script src="inventario.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const params = new URLSearchParams(window.location.search);
+            const modeloSeleccionado = params.get('modelo');
+
+            if (!modeloSeleccionado) {
+                window.location.href = 'index.html';
+                return;
+            }
+
+            const datos = bdInventario[modeloSeleccionado];
+
+            if (datos) {
+                document.getElementById('txt-modelo').textContent = modeloSeleccionado.toUpperCase();
+                document.getElementById('txt-marca').textContent = (datos.marca || "").toUpperCase();
+
+                // Características Seguras
+                const caracteristicas = datos.caracteristicas || {};
+                document.getElementById('char-puerto').textContent = datos.caracteristicas?.puerto || "-";
+                document.getElementById('char-camaras').textContent = datos.caracteristicas?.cantCamaras || "-";
+                document.getElementById('char-tamano').textContent = datos.caracteristicas?.tamano || "-";
+                document.getElementById('char-silenciar').textContent = datos.caracteristicas?.silenciar || "-";
+                document.getElementById('char-faceid').textContent = datos.caracteristicas?.faceId || "-";
+                document.getElementById('char-controlcamara').textContent = datos.caracteristicas?.controlCamara || "-";
+
+                // Compartibilidades Seguras
+                const compatibilidades = datos.compatibilidades || {};
+                document.getElementById('comp-pantalla').textContent = compatibilidades.pantalla || "No definido";
+                document.getElementById('comp-cubrecamaras').textContent = compatibilidades.cubrecamaras || "No definido";
+                document.getElementById('comp-carcasas').textContent = compatibilidades.carcasas || "No definido";
+
+                // ==========================================
+                // MOTOR DE RENDERIZADO DINÁMICO (SOPORTE MULTI-CAJÓN CORREGIDO)
+                // ==========================================
+                const ubicacion = datos.ubicacion || {};
+                document.getElementById('txt-nota-ubicacion').textContent = ubicacion.nota || "Sin notas de ubicación.";
+
+                // Capturar variables de la base de datos de manera segura
+                const letraMueble = (ubicacion.mueble || "A").toUpperCase(); 
+                const ubicacionObjetivo = String(ubicacion.numeroCajon || "").toLowerCase().trim();
+
+                // FUNCIÓN AUXILIAR CORREGIDA: Compara de manera segura números y texto
+                const esCajonActivo = (idCajon) => {
+                    if (!ubicacionObjetivo) return false;
+                    
+                    const idString = String(idCajon).toLowerCase().trim();
+
+                    // Si es una zona superior, buscamos coincidencia de texto directa
+                    if (idString.startsWith('sup-')) {
+                        return ubicacionObjetivo.includes(idString);
+                    }
+                    
+                    // Para cajones numéricos, extraemos todos los números individuales de la base de datos
+                    const numerosBuscados = ubicacionObjetivo.match(/\d+/g) || [];
+                    return numerosBuscados.includes(idString);
+                };
+
+                // Estilo base inyectado para asegurar volumen en todos los cajones inferiores pequeños
+                const estiloCajonBase = `min-height: 45px; background-color: #2a2a2e; border: 1px solid #444; border-radius: 4px; box-sizing: border-box;`;
+
+                // Capturar contenedor e inyectar el diseño según el mueble
+                const contenedorPlano = document.getElementById('contenedor-plano-dinamico');
+                
+                if (contenedorPlano) {
+                    contenedorPlano.innerHTML = ''; // Limpiar mapa anterior
+
+                    if (letraMueble === "A") {
+                        // 🏛️ DISEÑO MUEBLE A
+                        contenedorPlano.innerHTML = `
+                            <div class="orientacion-tienda-wrapper">
+                                <div class="referencia-lateral texto-espejo">ESPEJO</div>
+                                <div class="mueble-real-contenedor">
+                                    <div class="mueble-zona-superior">
+                                        <div class="bloque-superior" id="mueble-a-sup-1"></div>
+                                        <div class="bloque-superior" id="mueble-a-sup-2"></div>
+                                        <div class="bloque-superior" id="mueble-a-sup-3"></div>
+                                    </div>
+                                    <div class="mueble-zona-inferior" id="mueble-inferior-grid"></div>
+                                </div>
+                                <div class="referencia-lateral texto-entrada">ENTRADA</div>
+                            </div>
+                        `;
+
+                        if (esCajonActivo('sup-1')) document.getElementById('mueble-a-sup-1')?.classList.add('activo');
+                        if (esCajonActivo('sup-2')) document.getElementById('mueble-a-sup-2')?.classList.add('activo');
+                        if (esCajonActivo('sup-3')) document.getElementById('mueble-a-sup-3')?.classList.add('activo');
+
+                        const gridInferior = document.getElementById('mueble-inferior-grid');
+                        if (gridInferior) {
+                            const gavetaIzq = document.createElement('div');
+                            gavetaIzq.className = 'cajon-inf gaveta-grande';
+                            if (ubicacionObjetivo.includes('gaveta')) {
+                                gavetaIzq.classList.add('activo');
+                            }
+                            gridInferior.appendChild(gavetaIzq);
+
+                            for (let i = 1; i <= 28; i++) {
+                                const divCajon = document.createElement('div');
+                                divCajon.className = 'cajon-inf';
+                                divCajon.style = estiloCajonBase;
+                                if (esCajonActivo(i)) {
+                                    divCajon.classList.add('activo');
+                                }
+                                gridInferior.appendChild(divCajon);
+                            }
+                        }
+
+                    } else if (letraMueble === "B") {
+                        // 🏛️ DISEÑO MUEBLE B
+                        contenedorPlano.innerHTML = `
+                            <div class="orientacion-tienda-wrapper">
+                                <div class="referencia-lateral" style="border: none;"></div>
+                                <div class="mueble-real-contenedor">
+                                    <div class="mueble-b-contenedor">
+                                        <div class="mueble-zona-superior-unica" id="mueble-b-sup"></div>
+                                        <div class="mueble-b-inferior-grid">
+                                            <div class="cajon-inf" id="mueble-b-1" style="${estiloCajonBase}"></div>
+                                            <div class="cajon-inf" id="mueble-b-2" style="${estiloCajonBase}"></div>
+                                            <div class="cajon-inf" id="mueble-b-3" style="${estiloCajonBase}"></div>
+                                            <div class="cajon-inf" id="mueble-b-4" style="${estiloCajonBase}"></div>
+                                            <div class="cajon-inf" id="mueble-b-5" style="${estiloCajonBase}"></div>
+                                            <div class="cajon-inf" id="mueble-b-6" style="${estiloCajonBase}"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+
+                        if (ubicacionObjetivo.includes('sup')) {
+                            document.getElementById('mueble-b-sup')?.classList.add('activo');
+                        }
+                        for (let i = 1; i <= 6; i++) {
+                            if (esCajonActivo(i)) document.getElementById(`mueble-b-${i}`)?.classList.add('activo');
+                        }
+
+                    } else if (letraMueble === "C") {
+                        // 🏛️ DISEÑO MUEBLE C (36 cajones)
+                        contenedorPlano.innerHTML = `
+                            <div class="mueble-real-contenedor" style="display: flex; flex-direction: column; gap: 8px; width: 100%;">
+                                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; height: 160px;">
+                                    <div class="bloque-superior" id="mueble-c-sup-1"></div>
+                                    <div class="bloque-superior" id="mueble-c-sup-2"></div>
+                                    <div class="bloque-superior" id="mueble-c-sup-3"></div>
+                                </div>
+                                <div id="mueble-c-grid" style="display: grid; grid-template-columns: repeat(9, 1fr); gap: 6px; background: #1e1e22; padding: 8px; border-radius: 6px; border: 1px solid #333;"></div>
+                            </div>
+                        `;
+                        if (esCajonActivo('sup-1')) document.getElementById('mueble-c-sup-1')?.classList.add('activo');
+                        if (esCajonActivo('sup-2')) document.getElementById('mueble-c-sup-2')?.classList.add('activo');
+                        if (esCajonActivo('sup-3')) document.getElementById('mueble-c-sup-3')?.classList.add('activo');
+
+                        const gridC = document.getElementById('mueble-c-grid');
+                        for (let i = 1; i <= 36; i++) {
+                            const cajon = document.createElement('div');
+                            cajon.className = 'cajon-inf';
+                            cajon.style = estiloCajonBase;
+                            if (esCajonActivo(i)) cajon.classList.add('activo');
+                            gridC.appendChild(cajon);
+                        }
+
+                    } else if (letraMueble === "D") {
+                        // 🏛️ DISEÑO MUEBLE D (12 cajones)
+                        contenedorPlano.innerHTML = `
+                            <div class="mueble-real-contenedor" style="display: flex; flex-direction: column; gap: 8px; width: 100%; max-width: 400px; margin: 0 auto;">
+                                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px; height: 160px;">
+                                    <div class="bloque-superior" id="mueble-d-sup-1"></div>
+                                    <div class="bloque-superior" id="mueble-d-sup-2"></div>
+                                </div>
+                                <div id="mueble-d-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; background: #1e1e22; padding: 8px; border-radius: 6px; border: 1px solid #333;"></div>
+                            </div>
+                        `;
+                        if (esCajonActivo('sup-1')) document.getElementById('mueble-d-sup-1')?.classList.add('activo');
+                        if (esCajonActivo('sup-2')) document.getElementById('mueble-d-sup-2')?.classList.add('activo');
+
+                        const gridD = document.getElementById('mueble-d-grid');
+                        for (let i = 1; i <= 12; i++) {
+                            const cajon = document.createElement('div');
+                            cajon.className = 'cajon-inf';
+                            cajon.style = estiloCajonBase;
+                            if (esCajonActivo(i)) cajon.classList.add('activo');
+                            gridD.appendChild(cajon);
+                        }
+
+                    } else if (letraMueble === "E") {
+                        // 🏛️ DISEÑO MUEBLE E (48 cajones)
+                        contenedorPlano.innerHTML = `
+                            <div class="mueble-real-contenedor" style="display: flex; flex-direction: column; gap: 8px; width: 100%;">
+                                <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; height: 160px;">
+                                    <div class="bloque-superior" id="mueble-e-sup-1"></div>
+                                    <div class="bloque-superior" id="mueble-e-sup-2"></div>
+                                    <div class="bloque-superior" id="mueble-e-sup-3"></div>
+                                    <div class="bloque-superior" id="mueble-e-sup-4"></div>
+                                </div>
+                                <div id="mueble-e-grid" style="display: grid; grid-template-columns: repeat(12, 1fr); gap: 6px; background: #1e1e22; padding: 8px; border-radius: 6px; border: 1px solid #333;"></div>
+                            </div>
+                        `;
+                        if (esCajonActivo('sup-1')) document.getElementById('mueble-e-sup-1')?.classList.add('activo');
+                        if (esCajonActivo('sup-2')) document.getElementById('mueble-e-sup-2')?.classList.add('activo');
+                        if (esCajonActivo('sup-3')) document.getElementById('mueble-e-sup-3')?.classList.add('activo');
+                        if (esCajonActivo('sup-4')) document.getElementById('mueble-e-sup-4')?.classList.add('activo');
+
+                        const gridE = document.getElementById('mueble-e-grid');
+                        for (let i = 1; i <= 48; i++) {
+                            const cajon = document.createElement('div');
+                            cajon.className = 'cajon-inf';
+                            cajon.style = estiloCajonBase;
+                            if (esCajonActivo(i)) cajon.classList.add('activo');
+                            gridE.appendChild(cajon);
+                        }
+
+                    } else if (letraMueble === "F") {
+                        // 🏛️ DISEÑO MUEBLE F
+                        contenedorPlano.innerHTML = `
+                            <div class="mueble-real-contenedor" style="display: grid; grid-template-columns: 6fr 3fr; gap: 12px; width: 100%;">
+                                
+                                <div style="display: flex; flex-direction: column; gap: 8px;">
+                                    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px; height: 240px;">
+                                        <div class="bloque-superior" id="mueble-f-sup-1"></div>
+                                        <div class="bloque-superior" id="mueble-f-sup-2"></div>
+                                    </div>
+                                    <div id="mueble-f-izq-grid" style="display: grid; grid-template-columns: repeat(6, 1fr); gap: 6px; background: #1e1e22; padding: 8px; border-radius: 6px; border: 1px solid #333;"></div>
+                                </div>
+
+                                <div style="display: grid; grid-template-rows: auto 1fr; gap: 8px;">
+                                    <div class="bloque-superior" id="mueble-f-sup-3" style="height: calc(240px + 8px + 90px + 6px);"></div>
+                                    <div id="mueble-f-der-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; background: #1e1e22; padding: 8px; border-radius: 6px; border: 1px solid #333;"></div>
+                                </div>
+
+                            </div>
+                        `;
+
+                        if (esCajonActivo('sup-1')) document.getElementById('mueble-f-sup-1')?.classList.add('activo');
+                        if (esCajonActivo('sup-2')) document.getElementById('mueble-f-sup-2')?.classList.add('activo');
+                        if (esCajonActivo('sup-3')) document.getElementById('mueble-f-sup-3')?.classList.add('activo');
+
+                        // Renderizar los 24 cajones izquierdos (1 al 24)
+                        const gridFIzq = document.getElementById('mueble-f-izq-grid');
+                        for (let i = 1; i <= 24; i++) {
+                            const cajon = document.createElement('div');
+                            cajon.className = 'cajon-inf';
+                            cajon.style = estiloCajonBase;
+                            if (esCajonActivo(i)) cajon.classList.add('activo');
+                            gridFIzq.appendChild(cajon);
+                        }
+
+                        // Renderizar los 6 cajones derechos (25 al 30)
+                        const gridFDer = document.getElementById('mueble-f-der-grid');
+                        for (let i = 25; i <= 30; i++) {
+                            const cajon = document.createElement('div');
+                            cajon.className = 'cajon-inf';
+                            cajon.style = estiloCajonBase;
+                            if (esCajonActivo(i)) cajon.classList.add('activo');
+                            gridFDer.appendChild(cajon);
+                        }
+                    }
+                }
+                // ==========================================
+
+                // Línea de Evolución Dinámica
+                const contenedorEvolucion = document.getElementById('contenedor-evolucion');
+                contenedorEvolucion.innerHTML = '';
+
+                // Renderizar evolución/serie
+                Object.keys(bdInventario).forEach(nombreClave => {
+                    const telf = bdInventario[nombreClave];
+                    if (telf.serie === datos.serie && telf.marca === datos.marca) {
+                        const esElActual = nombreClave === modeloSeleccionado ? 'tarjeta-actual' : '';
+                        
+                        let esIslaDinamicaEvolucion = false;
+                        if (nombreClave.includes('16e') || nombreClave.includes('17e')) {
+                            esIslaDinamicaEvolucion = false;
+                        } else if (
+                            nombreClave.includes('Air') ||
+                            nombreClave.includes('14 Pro') ||
+                            nombreClave.includes('15') ||
+                            nombreClave.includes('16') ||
+                            nombreClave.includes('17')
+                        ) {
+                            esIslaDinamicaEvolucion = true;
+                        }
+
+                        const muescaEvolucion = esIslaDinamicaEvolucion 
+                            ? '<div class="isla-dinamica"></div>' 
+                            : '<div class="notch"></div>';
+                        
+                        contenedorEvolucion.innerHTML += `
+                            <a href="detalles.html?modelo=${encodeURIComponent(nombreClave)}" class="evolucion-tarjeta ${esElActual}">
+                                <div class="imagen-contenedor" style="margin-bottom: 10px;">
+                                    <div class="smartphone-icon">
+                                        ${muescaEvolucion}
+                                    </div>
+                                </div>
+                                <h4>${nombreClave}</h4>
+                                <span>${telf.marca}</span>
+                            </a>
+                        `;
+                    }
+                });
+            } else {
+                document.getElementById('txt-modelo').textContent = modeloSeleccion0.toUpperCase();
+                document.getElementById('txt-marca').textContent = "SIN REGISTROS";
+                document.querySelector('.dos-columnas-grid').innerHTML = `
+                    <div style="grid-column: 1 / -1; text-align: center; padding: 50px; background: #121214; border-radius: 12px; border: 1px dashed #2d2d34; color: #a1a1aa;">
+                        ⚠️ No has ingresado las especificaciones para <strong>"${modeloSeleccionado}"</strong> en el archivo <code>inventario.js</code> todavía.
+                    </div>
+                `;
+            }
+        });
+    </script>
+</body>
+</html>
